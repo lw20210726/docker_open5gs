@@ -37,11 +37,19 @@ python3 /mnt/pgw/tun_if.py --tun_ifname ogstun2 --ipv4_range 192.168.101.0/24 --
 [ ${#MNC} == 3 ] && EPC_DOMAIN="epc.mnc${MNC}.mcc${MCC}.3gppnetwork.org" || EPC_DOMAIN="epc.mnc0${MNC}.mcc${MCC}.3gppnetwork.org"
 
 cp /mnt/pgw/pgw.yaml install/etc/open5gs
-sed -i 's|PGW_IP|'$IP_ADDR'|g' install/etc/open5gs/pgw.yaml
+cp /mnt/pgw/pgw.conf install/etc/freeDiameter
+cp /mnt/pgw/make_certs.sh install/etc/freeDiameter
+
+sed -i 's|PGW_IP|'$PGW_IP'|g' install/etc/open5gs/pgw.yaml
 sed -i 's|PGW_IF|'$IF_NAME'|g' install/etc/open5gs/pgw.yaml
-sed -i 's|PCRF_IP|'$PCRF_IP'|g' install/etc/open5gs/pgw.yaml
-sed -i 's|EPC_DOMAIN|'$EPC_DOMAIN'|g' install/etc/open5gs/pgw.yaml
 sed -i 's|PCSCF_IP|'$PCSCF_IP'|g' install/etc/open5gs/pgw.yaml
+sed -i 's|PGW_IP|'$PGW_IP'|g' install/etc/freeDiameter/pgw.conf
+sed -i 's|PCRF_IP|'$PCRF_IP'|g' install/etc/freeDiameter/pgw.conf
+sed -i 's|EPC_DOMAIN|'$EPC_DOMAIN'|g' install/etc/freeDiameter/pgw.conf
+sed -i 's|EPC_DOMAIN|'$EPC_DOMAIN'|g' install/etc/freeDiameter/make_certs.sh
+
+# Generate TLS certificates
+./install/etc/freeDiameter/make_certs.sh install/etc/freeDiameter
 
 # Sync docker time
 #ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
