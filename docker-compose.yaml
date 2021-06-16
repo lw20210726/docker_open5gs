@@ -2,7 +2,7 @@ version: '3'
 services:
   mongo:
     build: ./mongo
-    image: docker_open5gs_mongo
+    image: docker_mongo
     container_name: mongo
     env_file:
       - .env
@@ -18,13 +18,14 @@ services:
       default:
         ipv4_address: ${MONGO_IP}
   webui:
-    build: ./webui
-    image: docker_open5gs_webui
+    image: docker_open5gs
     container_name: webui
     depends_on:
       - mongo
     env_file:
       - .env
+    environment:
+      - COMPONENT_NAME=webui
     volumes:
       - ./webui:/mnt/webui
       - /etc/timezone:/etc/timezone:ro
@@ -37,11 +38,12 @@ services:
       default:
         ipv4_address: ${WEBUI_IP}
   hss:
-    build: ./hss
-    image: docker_open5gs_hss
+    image: docker_open5gs
     container_name: hss
     env_file:
       - .env
+    environment:
+      - COMPONENT_NAME=hss-1
     volumes:
       - ./hss:/mnt/hss
       - ./log:/open5gs/install/var/log/open5gs
@@ -60,11 +62,12 @@ services:
       default:
         ipv4_address: ${HSS_IP}
   sgw:
-    build: ./sgw
-    image: docker_open5gs_sgw
+    image: docker_open5gs
     container_name: sgw
     env_file:
       - .env
+    environment:
+      - COMPONENT_NAME=sgw-1
     volumes:
       - ./sgw:/mnt/sgw
       - ./log:/open5gs/install/var/log/open5gs
@@ -79,11 +82,12 @@ services:
       default:
         ipv4_address: ${SGW_IP}
   pgw:
-    build: ./pgw
-    image: docker_open5gs_pgw
+    image: docker_open5gs
     container_name: pgw
     env_file:
       - .env
+    environment:
+      - COMPONENT_NAME=pgw-1
     volumes:
       - ./pgw:/mnt/pgw
       - ./log:/open5gs/install/var/log/open5gs
@@ -108,8 +112,7 @@ services:
       default:
         ipv4_address: ${PGW_IP}
   mme:
-    build: ./mme
-    image: docker_open5gs_mme
+    image: docker_open5gs
     depends_on:
       - hss
       - sgw
@@ -117,6 +120,8 @@ services:
     container_name: mme
     env_file:
       - .env
+    environment:
+      - COMPONENT_NAME=mme-1
     volumes:
       - ./mme:/mnt/mme
       - ./log:/open5gs/install/var/log/open5gs
@@ -136,11 +141,12 @@ services:
       default:
         ipv4_address: ${MME_IP}
   pcrf:
-    build: ./pcrf
-    image: docker_open5gs_pcrf
+    image: docker_open5gs
     container_name: pcrf
     env_file:
       - .env
+    environment:
+      - COMPONENT_NAME=pcrf-1
     depends_on:
       - mongo
     volumes:
