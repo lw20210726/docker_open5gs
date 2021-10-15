@@ -104,8 +104,7 @@ services:
       - "2123/udp"
     cap_add:
       - NET_ADMIN
-    devices:
-      - "/dev/net/tun"
+    privileged: true
     sysctls:
       - net.ipv4.ip_forward=1
     networks:
